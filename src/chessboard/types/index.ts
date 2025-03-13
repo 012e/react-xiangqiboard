@@ -83,17 +83,6 @@ export type Piece =
 
 export type BoardPosition = { [square in Square]?: Piece };
 
-export type PromotionPieceOption =
-  | "wQ"
-  | "wR"
-  | "wN"
-  | "wB"
-  | "bQ"
-  | "bR"
-  | "bN"
-  | "bB";
-export type PromotionStyle = "default" | "vertical" | "modal";
-
 export type CustomSquareProps = {
   children: ReactNode;
   // Allow user to specify their outer element
@@ -154,16 +143,6 @@ export type ChessboardProps = {
    */
   arePiecesDraggable?: boolean;
   /**
-   * Whether or not premoves are allowed.
-   * @default false
-   */
-  arePremovesAllowed?: boolean;
-  /**
-   * Whether or not to automatically promote pawn to queen
-   * @default false
-   */
-  autoPromoteToQueen?: boolean;
-  /**
    * The orientation of the board, the chosen colour will be at the bottom of the board.
    * @default white
    */
@@ -172,11 +151,6 @@ export type ChessboardProps = {
    * The width of the board in pixels.
    */
   boardWidth?: number;
-  /**
-   * If premoves are allowed, whether or not to clear the premove queue on right click.
-   * @default true
-   */
-  clearPremovesOnRightClick?: boolean;
   /**
    * Array where each element is a tuple containing two Square values (representing the 'from' and 'to' squares) and an optional third string element for the arrow color
    * e.g. [ ['a3', 'a5', 'red'], ['b1, 'd5] ].
@@ -227,16 +201,6 @@ export type ChessboardProps = {
    * @default {}
    */
   customPieces?: CustomPieces;
-  /**
-   * Custom premove dark square style object.
-   * @default { backgroundColor: "#A42323" }
-   */
-  customPremoveDarkSquareStyle?: Record<string, string | number>;
-  /**
-   * Custom premove light square style object.
-   * @default { backgroundColor: "#BD2828" }
-   */
-  customPremoveLightSquareStyle?: Record<string, string | number>;
   /**
    * Custom square renderer for all squares.
    * @default div
@@ -327,26 +291,6 @@ export type ChessboardProps = {
    */
   onSparePieceDrop?: (piece: Piece, targetSquare: Square) => boolean;
   /**
-   * User function that is run when piece is dropped. Must return whether the move results in a promotion or not.
-   * @default (sourceSquare, targetSquare, piece) => (((piece === "wP" && sourceSquare[1] === "7" && targetSquare[1] === "8") ||
-   *                                                  (piece === "bP" && sourceSquare[1] === "2" && targetSquare[1] === "1")) &&
-   *                                                  Math.abs(sourceSquare.charCodeAt(0) - targetSquare.charCodeAt(0)) <= 1)
-   */
-  onPromotionCheck?: (
-    sourceSquare: Square,
-    targetSquare: Square,
-    piece: Piece
-  ) => boolean;
-  /**
-   * User function that is run when a promotion piece is selected. Must return whether the move was successful or not.
-   * @default () => true
-   */
-  onPromotionPieceSelect?: (
-    piece?: PromotionPieceOption,
-    promoteFromSquare?: Square,
-    promoteToSquare?: Square
-  ) => boolean;
-  /**
    * User function that is run when a square is clicked.
    * @default () => {}
    */
@@ -362,16 +306,6 @@ export type ChessboardProps = {
    */
   position?: string | BoardPosition;
   /**
-   * Style of promotion dialog.
-   * @default default
-   */
-  promotionDialogVariant?: PromotionStyle;
-  /**
-   * The square to promote a piece to.
-   * @default null
-   */
-  promotionToSquare?: Square | null;
-  /**
    * RefObject that is sent as forwardRef to chessboard.
    */
   ref?: RefObject<HTMLDivElement>;
@@ -380,11 +314,6 @@ export type ChessboardProps = {
    * @default true
    */
   showBoardNotation?: boolean;
-  /**
-   * Whether or not to show the promotion dialog.
-   * @default false
-   */
-  showPromotionDialog?: boolean;
   /**
    * Whether or not to center dragged pieces on the mouse cursor.
    * @default true

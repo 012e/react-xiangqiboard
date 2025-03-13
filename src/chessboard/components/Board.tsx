@@ -2,7 +2,6 @@ import { useRef, useEffect } from "react";
 import { Squares } from "./Squares";
 import { Arrows } from "./Arrows";
 import { useChessboard } from "../context/chessboard-context";
-import { PromotionDialog } from "./PromotionDialog";
 import { WhiteKing } from "./ErrorBoundary";
 
 export function Board() {
@@ -11,9 +10,6 @@ export function Board() {
   const {
     boardWidth,
     clearCurrentRightClickDown,
-    onPromotionPieceSelect,
-    setShowPromoteDialog,
-    showPromoteDialog,
     customBoardStyle,
   } = useChessboard();
 
@@ -45,27 +41,6 @@ export function Board() {
       >
         <Squares />
         <Arrows />
-
-        {showPromoteDialog && (
-          <>
-            <div
-              onClick={() => {
-                setShowPromoteDialog(false);
-                onPromotionPieceSelect?.();
-              }}
-              style={{
-                position: "absolute",
-                top: "0",
-                left: "0",
-                zIndex: "100",
-                backgroundColor: "rgba(22,21,18,.7)",
-                width: boardWidth,
-                height: boardWidth,
-              }}
-            />
-            <PromotionDialog />
-          </>
-        )}
       </div>
     </div>
   ) : (

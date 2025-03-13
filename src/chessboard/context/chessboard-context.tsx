@@ -31,12 +31,6 @@ interface ChessboardProviderProps extends ChessboardProps {
   children: ReactNode;
 }
 
-type Premove = {
-  sourceSq: Square;
-  targetSq: Square;
-  piece: Piece;
-};
-
 type RequiredChessboardProps = Required<ChessboardProps>;
 
 interface ChessboardProviderContext {
@@ -44,8 +38,6 @@ interface ChessboardProviderContext {
   allowDragOutsideBoard: RequiredChessboardProps["allowDragOutsideBoard"];
   animationDuration: RequiredChessboardProps["animationDuration"];
   arePiecesDraggable: RequiredChessboardProps["arePiecesDraggable"];
-  arePremovesAllowed: RequiredChessboardProps["arePremovesAllowed"];
-  autoPromoteToQueen: RequiredChessboardProps["autoPromoteToQueen"];
   boardOrientation: RequiredChessboardProps["boardOrientation"];
   boardWidth: RequiredChessboardProps["boardWidth"];
   customArrowColor: RequiredChessboardProps["customArrowColor"];
@@ -54,8 +46,6 @@ interface ChessboardProviderContext {
   customDarkSquareStyle: RequiredChessboardProps["customDarkSquareStyle"];
   customDropSquareStyle: RequiredChessboardProps["customDropSquareStyle"];
   customLightSquareStyle: RequiredChessboardProps["customLightSquareStyle"];
-  customPremoveDarkSquareStyle: RequiredChessboardProps["customPremoveDarkSquareStyle"];
-  customPremoveLightSquareStyle: RequiredChessboardProps["customPremoveLightSquareStyle"];
   customSquare: RequiredChessboardProps["customSquare"];
   customSquareStyles: ChessboardProps["customSquareStyles"];
   dropOffBoardAction: ChessboardProps["dropOffBoardAction"];
@@ -69,11 +59,8 @@ interface ChessboardProviderContext {
   onPieceDragEnd: RequiredChessboardProps["onPieceDragEnd"];
   onPieceDrop: RequiredChessboardProps["onPieceDrop"];
   onPieceDropOffBoard: ChessboardProps["onPieceDropOffBoard"];
-  onPromotionCheck: RequiredChessboardProps["onPromotionCheck"];
-  onPromotionPieceSelect: RequiredChessboardProps["onPromotionPieceSelect"];
   onSparePieceDrop: ChessboardProps["onSparePieceDrop"];
   onSquareClick: RequiredChessboardProps["onSquareClick"];
-  promotionDialogVariant: RequiredChessboardProps["promotionDialogVariant"];
   showBoardNotation: RequiredChessboardProps["showBoardNotation"];
   snapToCursor: RequiredChessboardProps["snapToCursor"];
 
@@ -101,14 +88,7 @@ interface ChessboardProviderContext {
   onRightClickDown: (square: Square) => void;
   onRightClickUp: (square: Square) => void;
   positionDifferences: { added: BoardPosition; removed: BoardPosition };
-  premoves: Premove[];
-  promoteFromSquare: Square | null;
-  promoteToSquare: Square | null;
   setLastSquareDraggedOver: React.Dispatch<React.SetStateAction<Square | null>>;
-  setPromoteFromSquare: React.Dispatch<React.SetStateAction<Square | null>>;
-  setPromoteToSquare: React.Dispatch<React.SetStateAction<Square | null>>;
-  setShowPromoteDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  showPromoteDialog: boolean;
 }
 
 export const ChessboardContext = createContext({} as ChessboardProviderContext);
@@ -122,12 +102,9 @@ export const ChessboardProvider = forwardRef(
       animationDuration = 300,
       areArrowsAllowed = true,
       arePiecesDraggable = true,
-      arePremovesAllowed = false,
-      autoPromoteToQueen = false,
       boardOrientation = "white",
       boardWidth,
       children,
-      clearPremovesOnRightClick = true,
       customArrows,
       customArrowColor = "rgb(255,170,0)",
       customBoardStyle,
@@ -138,8 +115,6 @@ export const ChessboardProvider = forwardRef(
       },
       customLightSquareStyle = { backgroundColor: "#F0D9B5" },
       customPieces,
-      customPremoveDarkSquareStyle = { backgroundColor: "#A42323" },
-      customPremoveLightSquareStyle = { backgroundColor: "#BD2828" },
       customSquare = "div",
       customSquareStyles,
       dropOffBoardAction = "snapback",
@@ -155,26 +130,11 @@ export const ChessboardProvider = forwardRef(
       onPieceDragEnd = () => {},
       onPieceDrop = () => true,
       onPieceDropOffBoard = () => {},
-      onPromotionCheck = (sourceSquare, targetSquare, piece) => {
-        return (
-          ((piece === "wP" &&
-            sourceSquare[1] === "7" &&
-            targetSquare[1] === "8") ||
-            (piece === "bP" &&
-              sourceSquare[1] === "2" &&
-              targetSquare[1] === "1")) &&
-          Math.abs(sourceSquare.charCodeAt(0) - targetSquare.charCodeAt(0)) <= 1
-        );
-      },
-      onPromotionPieceSelect = () => true,
       onSparePieceDrop = () => true,
       onSquareClick = () => {},
       onSquareRightClick = () => {},
       position = "start",
-      promotionDialogVariant = "default",
-      promotionToSquare = null,
       showBoardNotation = true,
-      showPromotionDialog = false,
       snapToCursor = true,
     }: ChessboardProviderProps,
     ref
@@ -193,23 +153,6 @@ export const ChessboardProvider = forwardRef(
     // colour of last piece moved to determine if premoving
     const [lastPieceColour, setLastPieceColour] =
       useState<string | undefined>(undefined);
-
-    // show / hide promotion dialog
-    const [showPromoteDialog, setShowPromoteDialog] = useState(
-      showPromotionDialog && !autoPromoteToQueen
-    );
-
-    // which square a pawn is being promoted to
-    const [promoteFromSquare, setPromoteFromSquare] =
-      useState<Square | null>(null);
-    const [promoteToSquare, setPromoteToSquare] =
-      useState<Square | null>(promotionToSquare);
-
-    // current premoves
-    const [premoves, setPremoves] = useState<Premove[]>([]);
-
-    // ref used to access current value during timeouts (closures)
-    const premovesRef = useRef(premoves);
 
     // current right mouse down square
     const [currentRightClickDown, setCurrentRightClickDown] =
@@ -234,29 +177,13 @@ export const ChessboardProvider = forwardRef(
     const [lastSquareDraggedOver, setLastSquareDraggedOver] =
       useState<Square | null>(null);
 
-    // open clearPremoves() to allow user to call on undo/reset/whenever
-    useImperativeHandle(ref, () => ({
-      clearPremoves(clearLastPieceColour = true) {
-        clearPremoves(clearLastPieceColour);
-      },
-    }));
-
     // handle custom pieces change
     useEffect(() => {
       setChessPieces({ ...defaultPieces, ...customPieces });
     }, [customPieces]);
 
-    // handle promote changes
-    useEffect(() => {
-      setShowPromoteDialog(showPromotionDialog);
-      setPromoteToSquare(promotionToSquare);
-    }, [promotionToSquare, showPromotionDialog]);
-
     // handle external position change
     useEffect(() => {
-      // clear any open promotion dialogs
-      clearPromotion();
-
       const newPosition = convertPositionToObject(position);
       const differences = getPositionDifferences(currentPosition, newPosition);
       const newPieceColour =
@@ -269,7 +196,6 @@ export const ChessboardProvider = forwardRef(
       if (isWaitingForAnimation) {
         setCurrentPosition(newPosition);
         setIsWaitingForAnimation(false);
-        arePremovesAllowed && attemptPremove(newPieceColour);
         if (previousTimeout) {
           clearTimeout(previousTimeout);
         }
@@ -278,7 +204,6 @@ export const ChessboardProvider = forwardRef(
         if (wasManualDrop) {
           setCurrentPosition(newPosition);
           setIsWaitingForAnimation(false);
-          arePremovesAllowed && attemptPremove(newPieceColour);
         } else {
           // move was made by external position change
 
@@ -302,7 +227,6 @@ export const ChessboardProvider = forwardRef(
           const newTimeout = setTimeout(() => {
             setCurrentPosition(newPosition);
             setIsWaitingForAnimation(false);
-            arePremovesAllowed && attemptPremove(newPieceColour);
           }, animationDuration);
           setPreviousTimeout(newTimeout);
         }
@@ -343,27 +267,6 @@ export const ChessboardProvider = forwardRef(
 
       clearArrows();
 
-      // if second move is made for same colour, or there are still premoves queued, then this move needs to be added to premove queue instead of played
-      // premoves length check for colour is added in because white could make 3 premoves, and then black responds to the first move (changing the last piece colour) and then white pre-moves again
-      if (
-        (arePremovesAllowed && isWaitingForAnimation) ||
-        (arePremovesAllowed &&
-          (lastPieceColour === piece[0] ||
-            premovesRef.current.filter((p: Premove) => p.piece[0] === piece[0])
-              .length > 0))
-      ) {
-        const oldPremoves: Premove[] = [...premovesRef.current];
-
-        oldPremoves.push({ sourceSq, targetSq, piece });
-        premovesRef.current = oldPremoves;
-        setPremoves([...oldPremoves]);
-        clearPromotion();
-        return;
-      }
-
-      // if transitioning, don't allow new drop
-      if (!arePremovesAllowed && isWaitingForAnimation) return;
-
       const newOnDropPosition = { ...currentPosition };
 
       setWasManualDrop(!!wasManualDropOverride);
@@ -373,7 +276,6 @@ export const ChessboardProvider = forwardRef(
       if (onPieceDrop.length) {
         const isValidMove = onPieceDrop(sourceSq, targetSq, piece);
         if (!isValidMove) {
-          clearPremoves();
           setWasManualDrop(false);
         }
       } else {
@@ -384,8 +286,6 @@ export const ChessboardProvider = forwardRef(
         newOnDropPosition[targetSq] = piece;
         setCurrentPosition(newOnDropPosition);
       }
-
-      clearPromotion();
 
       // inform latest position information
       getPositionObject(newOnDropPosition);
@@ -399,38 +299,6 @@ export const ChessboardProvider = forwardRef(
 
       // inform latest position information
       getPositionObject(positionCopy);
-    }
-    function attemptPremove(newPieceColour?: string) {
-      if (premovesRef.current.length === 0) return;
-
-      // get current value of premove as this is called in a timeout so value may have changed since timeout was set
-      const premove = premovesRef.current[0];
-
-      // if premove is a differing colour to last move made, then this move can be made
-      if (
-        premove.piece[0] !== undefined &&
-        premove.piece[0] !== newPieceColour &&
-        onPieceDrop.length
-      ) {
-        setLastPieceColour(premove.piece[0]);
-        setWasManualDrop(true); // pre-move doesn't need animation
-        const isValidMove = onPieceDrop(
-          premove.sourceSq,
-          premove.targetSq,
-          premove.piece
-        );
-
-        // premove was successful and can be removed from queue
-        if (isValidMove) {
-          const oldPremoves = [...premovesRef.current];
-          oldPremoves.shift();
-          premovesRef.current = oldPremoves;
-          setPremoves([...oldPremoves]);
-        } else {
-          // premove wasn't successful, clear premove queue
-          clearPremoves();
-        }
-      }
     }
 
     function handleSparePieceDrop(piece: Piece, targetSq: Square) {
@@ -446,29 +314,15 @@ export const ChessboardProvider = forwardRef(
       getPositionObject(newOnDropPosition);
     }
 
-    function clearPremoves(clearLastPieceColour = true) {
-      // don't clear when right clicking to clear, otherwise you won't be able to premove again before next go
-      if (clearLastPieceColour) setLastPieceColour(undefined);
-      premovesRef.current = [];
-      setPremoves([]);
-    }
-
-    function clearPromotion() {
-      setPromoteFromSquare(null);
-      setPromoteToSquare(null);
-      setShowPromoteDialog(false);
-    }
-
     function onRightClickDown(square: Square) {
       setCurrentRightClickDown(square);
     }
 
     function onRightClickUp(square: Square) {
       if (currentRightClickDown) {
-        // same square, don't draw an arrow, but do clear premoves and run onSquareRightClick
+        // same square, don't draw an arrow
         if (currentRightClickDown === square) {
           setCurrentRightClickDown(undefined);
-          clearPremovesOnRightClick && clearPremoves(false);
           onSquareRightClick(square);
           return;
         }
@@ -483,9 +337,7 @@ export const ChessboardProvider = forwardRef(
       allowDragOutsideBoard,
       animationDuration,
       arePiecesDraggable,
-      arePremovesAllowed,
       arrows,
-      autoPromoteToQueen,
       boardOrientation,
       boardWidth,
       chessPieces,
@@ -499,8 +351,6 @@ export const ChessboardProvider = forwardRef(
       customDropSquareStyle,
       customLightSquareStyle,
       customNotationStyle,
-      customPremoveDarkSquareStyle,
-      customPremoveLightSquareStyle,
       customSquare,
       customSquareStyles,
       deletePieceFromSquare,
@@ -523,23 +373,13 @@ export const ChessboardProvider = forwardRef(
       onPieceDragEnd,
       onPieceDrop,
       onPieceDropOffBoard,
-      onPromotionCheck,
-      onPromotionPieceSelect,
       onRightClickDown,
       onRightClickUp,
       onSparePieceDrop,
       onSquareClick,
       positionDifferences,
-      premoves,
-      promoteFromSquare,
-      promoteToSquare,
-      promotionDialogVariant,
       setLastSquareDraggedOver,
-      setPromoteFromSquare,
-      setPromoteToSquare,
-      setShowPromoteDialog,
       showBoardNotation,
-      showPromoteDialog,
       snapToCursor,
     };
 

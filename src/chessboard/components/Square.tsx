@@ -8,20 +8,15 @@ type SquareProps = {
   children: ReactNode;
   setSquares: React.Dispatch<React.SetStateAction<{ [square in Sq]?: Coords }>>;
   square: Sq;
-  squareColor: "white" | "black";
-  squareHasPremove: boolean;
 };
 
 export function Square({
   square,
-  squareColor,
   setSquares,
-  squareHasPremove,
   children,
 }: SquareProps) {
   const squareRef = useRef<HTMLElement>(null);
   const {
-    autoPromoteToQueen,
     boardWidth,
     boardOrientation,
     clearArrows,
@@ -31,8 +26,6 @@ export function Square({
     customDarkSquareStyle,
     customDropSquareStyle,
     customLightSquareStyle,
-    customPremoveDarkSquareStyle,
-    customPremoveLightSquareStyle,
     customSquare: CustomSquare,
     customSquareStyles,
     drawNewArrow,
@@ -46,14 +39,10 @@ export function Square({
     onMouseOutSquare,
     onMouseOverSquare,
     onPieceDrop,
-    onPromotionCheck,
     onRightClickDown,
     onRightClickUp,
     onSquareClick,
     setLastSquareDraggedOver,
-    setPromoteFromSquare,
-    setPromoteToSquare,
-    setShowPromoteDialog,
   } = useChessboard();
 
   const [{ isOver }, drop] = useDrop(
@@ -70,7 +59,7 @@ export function Square({
       onPieceDrop,
       isWaitingForAnimation,
       lastPieceColour,
-    ]
+    ],
   );
 
   type BoardPiece = {
@@ -86,21 +75,7 @@ export function Square({
       handleSparePieceDrop(item.piece, square);
       return;
     }
-    if (onPromotionCheck(item.square, square, item.piece)) {
-      if (autoPromoteToQueen) {
-        handleSetPosition(
-          item.square,
-          square,
-          item.piece[0] === "w" ? "wQ" : "bQ"
-        );
-      } else {
-        setPromoteFromSquare(item.square);
-        setPromoteToSquare(square);
-        setShowPromoteDialog(true);
-      }
-    } else {
-      handleSetPosition(item.square, square, item.piece, true);
-    }
+    handleSetPosition(item.square, square, item.piece, true);
   }
 
   useEffect(() => {
@@ -112,13 +87,6 @@ export function Square({
 
   const defaultSquareStyle = {
     ...borderRadius(square, boardOrientation, customBoardStyle),
-    ...(squareColor === "black"
-      ? customDarkSquareStyle
-      : customLightSquareStyle),
-    ...(squareHasPremove &&
-      (squareColor === "black"
-        ? customPremoveDarkSquareStyle
-        : customPremoveLightSquareStyle)),
     ...(isOver && customDropSquareStyle),
   };
 
@@ -126,14 +94,13 @@ export function Square({
     <div
       ref={drop}
       style={defaultSquareStyle}
-      data-square-color={squareColor}
       data-square={square}
       onTouchMove={(e) => {
         // Handle touch events on tablet and mobile not covered by onMouseOver/onDragEnter
         const touchLocation = e.touches[0];
         const touchElement = document.elementsFromPoint(
           touchLocation.clientX,
-          touchLocation.clientY
+          touchLocation.clientY,
         );
         const draggedOverSquare = touchElement
           ?.find((el) => el.getAttribute("data-square"))
@@ -196,7 +163,7 @@ export function Square({
           style={{
             ...size(boardWidth),
             ...center,
-            ...(!squareHasPremove && customSquareStyles?.[square]),
+            ...(customSquareStyles?.[square]),
           }}
         >
           {children}
@@ -205,11 +172,10 @@ export function Square({
         <CustomSquare
           ref={squareRef}
           square={square}
-          squareColor={squareColor}
           style={{
             ...size(boardWidth),
             ...center,
-            ...(!squareHasPremove && customSquareStyles?.[square]),
+            ...(customSquareStyles?.[square]),
           }}
         >
           {children}
@@ -232,7 +198,7 @@ const size = (width: number) => ({
 const borderRadius = (
   square: Sq,
   boardOrientation: BoardOrientation,
-  customBoardStyle?: Record<string, string | number>
+  customBoardStyle?: Record<string, string | number>,
 ) => {
   if (!customBoardStyle?.borderRadius) return {};
 

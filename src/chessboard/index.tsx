@@ -6,9 +6,6 @@ import { ChessboardProps } from "./types";
 import { ChessboardProvider } from "./context/chessboard-context";
 import { CustomDragLayer } from "./components/CustomDragLayer";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-// spare pieces component
-// semantic release with github actions
-// improved arrows
 
 // npm publish --tag alpha
 // npm publish --dry-run
@@ -18,14 +15,10 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 // change board orientation to 'w' or 'b'? like used in chess.js?
 // Animation on premove? - only set manual drop to false in useEffect if not attempting successful premove
 
-export type ClearPremoves = {
-  clearPremoves: (clearLastPieceColour?: boolean) => void;
-};
-
 export { SparePiece } from "./components/SparePiece";
 export { ChessboardDnDProvider } from "./components/DnDRoot";
 
-export const Chessboard = forwardRef<ClearPremoves, ChessboardProps>(
+export const Chessboard = forwardRef<unknown, ChessboardProps>(
   (props, ref) => {
     const {
       customDndBackend,
@@ -103,3 +96,4 @@ export const Chessboard = forwardRef<ClearPremoves, ChessboardProps>(
     );
   }
 );
+

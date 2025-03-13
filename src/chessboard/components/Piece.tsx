@@ -6,14 +6,12 @@ import { useChessboard } from "../context/chessboard-context";
 import { Coords, CustomPieceFn, Piece as Pc, Square } from "../types";
 
 type PieceProps = {
-  isPremovedPiece?: boolean;
   piece: Pc;
   square: Square;
   squares: { [square in Square]?: Coords };
 };
 
 export function Piece({
-  isPremovedPiece = false,
   piece,
   square,
   squares,
@@ -34,7 +32,6 @@ export function Piece({
     onPieceDragBegin,
     onPieceDragEnd,
     onPieceDropOffBoard,
-    onPromotionCheck,
     positionDifferences,
   } = useChessboard();
 
@@ -94,19 +91,17 @@ export function Piece({
     const removedPiece = positionDifferences.removed?.[square];
     // return as null and not loaded yet
     if (!positionDifferences.added || !removedPiece) return;
-    // check if piece matches or if removed piece was a pawn and new square is on 1st or 8th rank (promotion)
+    // check if piece matches
     const newSquare = (
       Object.entries(positionDifferences.added) as [Square, Pc][]
     ).find(
-      ([s, p]) =>
-        p === removedPiece || onPromotionCheck(square, s, removedPiece)
+      ([s, p]) => p === removedPiece
     );
-    // we can perform animation if our square was in removed, AND the matching piece is in added AND this isn't a premoved piece
+    // we can perform animation if our square was in removed, AND the matching piece is in added
     if (
       isWaitingForAnimation &&
       removedPiece &&
-      newSquare &&
-      !isPremovedPiece
+      newSquare
     ) {
       const sourceSq = square;
       const targetSq = newSquare[0];
