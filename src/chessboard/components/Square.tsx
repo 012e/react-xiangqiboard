@@ -23,9 +23,7 @@ export function Square({
     currentPosition,
     currentRightClickDown,
     customBoardStyle,
-    customDarkSquareStyle,
     customDropSquareStyle,
-    customLightSquareStyle,
     customSquare: CustomSquare,
     customSquareStyles,
     drawNewArrow,
@@ -207,17 +205,17 @@ const borderRadius = (
       ? { borderBottomLeftRadius: customBoardStyle.borderRadius }
       : { borderTopRightRadius: customBoardStyle.borderRadius };
   }
-  if (square === "a8") {
+  if (square === "a10") {
     return boardOrientation === "white"
       ? { borderTopLeftRadius: customBoardStyle.borderRadius }
       : { borderBottomRightRadius: customBoardStyle.borderRadius };
   }
-  if (square === "h1") {
+  if (square === "i1") {
     return boardOrientation === "white"
       ? { borderBottomRightRadius: customBoardStyle.borderRadius }
       : { borderTopLeftRadius: customBoardStyle.borderRadius };
   }
-  if (square === "h8") {
+  if (square === "i10") {
     return boardOrientation === "white"
       ? { borderTopRightRadius: customBoardStyle.borderRadius }
       : { borderBottomLeftRadius: customBoardStyle.borderRadius };

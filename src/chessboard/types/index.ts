@@ -2,6 +2,24 @@ import type { FC, ReactElement, ReactNode, Ref, RefObject } from "react";
 import { BackendFactory } from "dnd-core";
 
 export type Square =
+  | "a10"
+  | "b10"
+  | "c10"
+  | "d10"
+  | "e10"
+  | "f10"
+  | "g10"
+  | "h10"
+  | "i10"
+  | "a9"
+  | "b9"
+  | "c9"
+  | "d9"
+  | "e9"
+  | "f9"
+  | "g9"
+  | "h9"
+  | "i9"
   | "a8"
   | "b8"
   | "c8"
@@ -10,6 +28,7 @@ export type Square =
   | "f8"
   | "g8"
   | "h8"
+  | "i8"
   | "a7"
   | "b7"
   | "c7"
@@ -18,6 +37,7 @@ export type Square =
   | "f7"
   | "g7"
   | "h7"
+  | "i7"
   | "a6"
   | "b6"
   | "c6"
@@ -26,6 +46,7 @@ export type Square =
   | "f6"
   | "g6"
   | "h6"
+  | "i6"
   | "a5"
   | "b5"
   | "c5"
@@ -34,6 +55,7 @@ export type Square =
   | "f5"
   | "g5"
   | "h5"
+  | "i5"
   | "a4"
   | "b4"
   | "c4"
@@ -42,6 +64,7 @@ export type Square =
   | "f4"
   | "g4"
   | "h4"
+  | "i4"
   | "a3"
   | "b3"
   | "c3"
@@ -50,6 +73,7 @@ export type Square =
   | "f3"
   | "g3"
   | "h3"
+  | "i3"
   | "a2"
   | "b2"
   | "c2"
@@ -58,6 +82,7 @@ export type Square =
   | "f2"
   | "g2"
   | "h2"
+  | "i2"
   | "a1"
   | "b1"
   | "c1"
@@ -65,7 +90,8 @@ export type Square =
   | "e1"
   | "f1"
   | "g1"
-  | "h1";
+  | "h1"
+  | "i1";
 
 export type Piece =
   | "wP"
@@ -74,12 +100,16 @@ export type Piece =
   | "wR"
   | "wQ"
   | "wK"
+  | "wC"
+  | "wA"
   | "bP"
   | "bB"
   | "bN"
   | "bR"
   | "bQ"
-  | "bK";
+  | "bK"
+  | "bC"
+  | "bA";
 
 export type BoardPosition = { [square in Square]?: Piece };
 

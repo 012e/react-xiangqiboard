@@ -11,11 +11,7 @@ type PieceProps = {
   squares: { [square in Square]?: Coords };
 };
 
-export function Piece({
-  piece,
-  square,
-  squares,
-}: PieceProps) {
+export function Piece({ piece, square, squares }: PieceProps) {
   const {
     animationDuration,
     arePiecesDraggable,
@@ -70,7 +66,7 @@ export function Piece({
         isDragging: !!monitor.isDragging(),
       }),
     }),
-    [piece, square, currentPosition, id]
+    [piece, square, currentPosition, id],
   );
 
   // hide the default preview
@@ -94,15 +90,9 @@ export function Piece({
     // check if piece matches
     const newSquare = (
       Object.entries(positionDifferences.added) as [Square, Pc][]
-    ).find(
-      ([s, p]) => p === removedPiece
-    );
+    ).find(([s, p]) => p === removedPiece);
     // we can perform animation if our square was in removed, AND the matching piece is in added
-    if (
-      isWaitingForAnimation &&
-      removedPiece &&
-      newSquare
-    ) {
+    if (isWaitingForAnimation && removedPiece && newSquare) {
       const sourceSq = square;
       const targetSq = newSquare[0];
       if (sourceSq && targetSq) {
@@ -157,7 +147,14 @@ export function Piece({
       ref={arePiecesDraggable && canDrag ? drag : null}
       onClick={() => onPieceClick(piece, square)}
       data-piece={piece}
-      style={pieceStyle}
+      style={{
+        ...pieceStyle,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: boardWidth / 8,
+        height: boardWidth / 8,
+      }}
     >
       {typeof chessPieces[piece] === "function" ? (
         (chessPieces[piece] as CustomPieceFn)({
@@ -167,9 +164,7 @@ export function Piece({
         })
       ) : (
         <svg
-          viewBox={"1 1 43 43"}
-          width={boardWidth / 8}
-          height={boardWidth / 8}
+          viewBox="0 0 45 45"
           style={{ display: "block" }}
         >
           <g>{chessPieces[piece] as ReactNode}</g>

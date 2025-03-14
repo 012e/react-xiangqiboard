@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-
 import { getRelativeCoords } from "../functions";
 import { useChessboard } from "../context/chessboard-context";
 import { Arrow } from "../types";
@@ -10,11 +9,11 @@ export const Arrows = () => {
     newArrow,
     boardOrientation,
     boardWidth,
-
-    customArrowColor: primaryArrowCollor,
+    customArrowColor: primaryArrowColor,
   } = useChessboard();
+  
   const arrowsList = [...arrows, newArrow].filter(Boolean) as Arrow[];
-
+  
   return (
     <svg
       width={boardWidth}
@@ -30,20 +29,25 @@ export const Arrows = () => {
       {arrowsList.map((arrow, i) => {
         const [arrowStartField, arrowEndField, arrowColor] = arrow;
         if (arrowStartField === arrowEndField) return null;
+        
         const from = getRelativeCoords(
           boardOrientation,
           boardWidth,
           arrowStartField
         );
+        
         const to = getRelativeCoords(
           boardOrientation,
           boardWidth,
           arrowEndField
         );
-        let ARROW_LENGTH_REDUCER = boardWidth / 32;
-
+        
+        // Adjust length reducer based on xiangqi board size
+        // Xiangqi is typically 9×10 while chess is 8×8
+        let ARROW_LENGTH_REDUCER = boardWidth / 36;
         const isArrowActive = i === arrows.length;
-        // if there are different arrows targeting the same square make their length a bit shorter
+        
+        // If there are different arrows targeting the same square, make their length a bit shorter
         if (
           arrows.some(
             (restArrow) =>
@@ -51,18 +55,18 @@ export const Arrows = () => {
           ) &&
           !isArrowActive
         ) {
-          ARROW_LENGTH_REDUCER = boardWidth / 16;
+          ARROW_LENGTH_REDUCER = boardWidth / 18;
         }
+        
         const dx = to.x - from.x;
         const dy = to.y - from.y;
-
         const r = Math.hypot(dy, dx);
-
+        
         const end = {
           x: from.x + (dx * (r - ARROW_LENGTH_REDUCER)) / r,
           y: from.y + (dy * (r - ARROW_LENGTH_REDUCER)) / r,
         };
-
+        
         return (
           <Fragment
             key={`${arrowStartField}-${arrowEndField}${
@@ -79,7 +83,7 @@ export const Arrows = () => {
             >
               <polygon
                 points="0.3 0, 2 1.25, 0.3 2.5"
-                fill={arrowColor ?? primaryArrowCollor}
+                fill={arrowColor ?? primaryArrowColor}
               />
             </marker>
             <line
@@ -88,9 +92,9 @@ export const Arrows = () => {
               x2={end.x}
               y2={end.y}
               opacity={isArrowActive ? "0.5" : "0.65"}
-              stroke={arrowColor ?? primaryArrowCollor}
+              stroke={arrowColor ?? primaryArrowColor}
               strokeWidth={
-                isArrowActive ? (0.9 * boardWidth) / 40 : boardWidth / 40
+                isArrowActive ? (0.9 * boardWidth) / 45 : boardWidth / 45
               }
               markerEnd={`url(#arrowhead-${i})`}
             />

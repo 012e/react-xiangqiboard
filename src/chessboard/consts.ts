@@ -1,40 +1,40 @@
 import { BoardPosition } from "./types";
 
-export const COLUMNS = "abcdefgh".split("");
+export const COLUMNS = "abcdefghi".split("");
 
 export const START_POSITION_OBJECT: BoardPosition = {
-  a8: "bR",
-  b8: "bN",
-  c8: "bB",
-  d8: "bQ",
-  e8: "bK",
-  f8: "bB",
-  g8: "bN",
-  h8: "bR",
+  a10: "bR",
+  b10: "bN",
+  c10: "bB",
+  d10: "bA",
+  e10: "bK",
+  f10: "bA",
+  g10: "bB",
+  h10: "bN",
+  i10: "bR",
+  b8: "bC",
+  h8: "bC",
   a7: "bP",
-  b7: "bP",
   c7: "bP",
-  d7: "bP",
   e7: "bP",
-  f7: "bP",
   g7: "bP",
-  h7: "bP",
-  a2: "wP",
-  b2: "wP",
-  c2: "wP",
-  d2: "wP",
-  e2: "wP",
-  f2: "wP",
-  g2: "wP",
-  h2: "wP",
+  i7: "bP",
   a1: "wR",
   b1: "wN",
   c1: "wB",
-  d1: "wQ",
+  d1: "wA",
   e1: "wK",
-  f1: "wB",
-  g1: "wN",
-  h1: "wR",
+  f1: "wA",
+  g1: "wB",
+  h1: "wN",
+  i1: "wR",
+  b3: "wC",
+  h3: "wC",
+  a4: "wP",
+  c4: "wP",
+  e4: "wP",
+  g4: "wP",
+  i4: "wP",
 };
 
 export const WHITE_COLUMN_VALUES: { [col in string]: number } = {
@@ -46,17 +46,19 @@ export const WHITE_COLUMN_VALUES: { [col in string]: number } = {
   f: 5,
   g: 6,
   h: 7,
+  i: 8,
 };
 export const BLACK_COLUMN_VALUES: { [col in string]: number } = {
-  a: 7,
-  b: 6,
-  c: 5,
-  d: 4,
-  e: 3,
-  f: 2,
-  g: 1,
-  h: 0,
+  a: 8,
+  b: 7,
+  c: 6,
+  d: 5,
+  e: 4,
+  f: 3,
+  g: 2,
+  h: 1,
+  i: 0,
 };
 
-export const WHITE_ROWS = [7, 6, 5, 4, 3, 2, 1, 0];
-export const BLACK_ROWS = [0, 1, 2, 3, 4, 5, 6, 7];
+export const WHITE_ROWS = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+export const BLACK_ROWS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];

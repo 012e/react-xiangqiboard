@@ -19,15 +19,15 @@ export function Notation({ row, col }: NotationProps) {
   const blackColor = customDarkSquareStyle.backgroundColor;
 
   const isRow = col === 0;
-  const isColumn = row === 7;
+  const isColumn = row === 9; // Updated for Xiangqi (last row is 9, not 7)
   const isBottomLeftSquare = isRow && isColumn;
 
   function getRow() {
-    return boardOrientation === "white" ? 8 - row : row + 1;
+    return boardOrientation === "white" ? 10 - row : row + 1; // Xiangqi has 10 ranks
   }
 
   function getColumn() {
-    return boardOrientation === "black" ? COLUMNS[7 - col] : COLUMNS[col];
+    return boardOrientation === "black" ? COLUMNS[8 - col] : COLUMNS[col]; // 9 columns
   }
 
   function renderBottomLeft() {
@@ -108,14 +108,15 @@ export function Notation({ row, col }: NotationProps) {
 
 const alphaStyle = (width: number, customNotationStyle?: Record<string, string | number>) => ({
   alignSelf: "flex-end",
-  paddingLeft: width / 8 - width / 48,
+  paddingLeft: width / 9 - width / 48, // Updated for 9 columns
   fontSize: width / 48,
   ...customNotationStyle
 });
 
 const numericStyle = (width: number, customNotationStyle?: Record<string, string | number>) => ({
   alignSelf: "flex-start",
-  paddingRight: width / 8 - width / 48,
+  paddingRight: width / 9 - width / 48, // Updated for 9 columns
   fontSize: width / 48,
   ...customNotationStyle
 });
+
