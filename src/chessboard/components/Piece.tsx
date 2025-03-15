@@ -152,21 +152,18 @@ export function Piece({ piece, square, squares }: PieceProps) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: boardWidth / 8,
-        height: boardWidth / 8,
+        width: boardWidth / 9,
+        height: boardWidth / 9,
       }}
     >
       {typeof chessPieces[piece] === "function" ? (
         (chessPieces[piece] as CustomPieceFn)({
-          squareWidth: boardWidth / 8,
+          squareWidth: boardWidth / 9,
           isDragging,
           square,
         })
       ) : (
-        <svg
-          viewBox="0 0 45 45"
-          style={{ display: "block" }}
-        >
+        <svg viewBox="0 0 45 45" style={{ display: "block" }}>
           <g>{chessPieces[piece] as ReactNode}</g>
         </svg>
       )}

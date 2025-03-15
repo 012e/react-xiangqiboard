@@ -16,8 +16,8 @@ export const Arrows = () => {
   
   return (
     <svg
-      width={boardWidth}
-      height={boardWidth}
+      width={boardWidth / 8 * 9}
+      height={boardWidth / 8 * 10}
       style={{
         position: "absolute",
         top: "0",
