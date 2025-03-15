@@ -14,7 +14,7 @@ import {
 export function getRelativeCoords(
   boardOrientation: BoardOrientation,
   boardWidth: number,
-  square: Square
+  square: Square,
 ): {
   x: number;
   y: number;
@@ -48,7 +48,7 @@ export function isDifferentFromStart(newPosition: BoardPosition): boolean {
     (square) => {
       if (START_POSITION_OBJECT[square] !== newPosition[square])
         isDifferent = true;
-    }
+    },
   );
 
   return isDifferent;
@@ -59,7 +59,7 @@ export function isDifferentFromStart(newPosition: BoardPosition): boolean {
  */
 export function getPositionDifferences(
   currentPosition: BoardPosition,
-  newPosition: BoardPosition
+  newPosition: BoardPosition,
 ): {
   added: BoardPosition;
   removed: BoardPosition;
@@ -74,7 +74,7 @@ export function getPositionDifferences(
     (square) => {
       if (newPosition[square] !== currentPosition[square])
         difference.removed[square] = currentPosition[square];
-    }
+    },
   );
 
   // added from new
@@ -82,7 +82,7 @@ export function getPositionDifferences(
     (square) => {
       if (currentPosition[square] !== newPosition[square])
         difference.added[square] = newPosition[square];
-    }
+    },
   );
 
   return difference;
@@ -92,7 +92,7 @@ export function getPositionDifferences(
  * Converts a fen string or existing position object to a position object.
  */
 export function convertPositionToObject(
-  position: string | BoardPosition
+  position: string | BoardPosition,
 ): BoardPosition {
   if (position === "start") {
     return START_POSITION_OBJECT;
@@ -110,22 +110,24 @@ export function convertPositionToObject(
  * Converts a fen string to a position object.
  */
 function fenToObj(fen: string): BoardPosition {
-  if (!isValidFen(fen)) return {};
+  if (!isValidFen(fen)) {
+    throw new Error("Invalid FEN: " + fen);
+  }
 
   // cut off any move, castling, etc info from the end. we're only interested in position information
   fen = fen.replace(/ .+$/, "");
   const rows = fen.split("/");
   const position: BoardPosition = {};
-  let currentRow = 8;
+  let currentRow = 10;
 
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 10; i++) {
     const row = rows[i].split("");
     let colIdx = 0;
 
     // loop through each character in the FEN section
     for (let j = 0; j < row.length; j++) {
       // number / empty squares
-      if (row[j].search(/[1-8]/) !== -1) {
+      if (row[j].search(/[1-9]/) !== -1) {
         const numEmptySquares = parseInt(row[j], 10);
         colIdx = colIdx + numEmptySquares;
       } else {
@@ -144,19 +146,40 @@ function fenToObj(fen: string): BoardPosition {
  * Returns whether string is valid fen notation.
  */
 function isValidFen(fen: string): boolean {
-  // cut off any move, castling, etc info from the end. we're only interested in position information
-  fen = fen.replace(/ .+$/, "");
+  // Extract the board position part (before any space)
+  const boardPart = fen.split(" ")[0];
 
-  // expand the empty square numbers to just 1s
-  fen = expandFenEmptySquares(fen);
+  // Expand the empty square numbers to just 1s
+  const expandedFen = expandFenEmptySquares(boardPart);
 
-  // fen should be 8 sections separated by slashes
-  const chunks = fen.split("/");
-  if (chunks.length !== 8) return false;
+  // Xiangqi fen should be 10 sections separated by slashes
+  const chunks = expandedFen.split("/");
+  if (chunks.length !== 10) return false;
 
-  // check each section
-  for (let i = 0; i < 8; i++) {
-    if (chunks[i].length !== 8 || chunks[i].search(/[^kqrnbpKQRNBP1]/) !== -1) {
+  // Check each section - Xiangqi has a 9x10 board
+  for (let i = 0; i < 10; i++) {
+    // Each row should have exactly 9 positions after expansion
+    if (chunks[i].length !== 9) return false;
+
+    // Check for valid pieces
+    // r=red rook, n=red knight, b=red bishop, a=red advisor, k=red king, c=red cannon, p=red pawn
+    // R=black rook, N=black knight, B=black bishop, A=black advisor, K=black king, C=black cannon, P=black pawn
+    // Note: Some variations use lowercase for red and uppercase for black, others do the opposite
+    if (chunks[i].search(/[^rnbakcp1RNBAKCPX]/) !== -1) {
+      return false;
+    }
+  }
+
+  // Check additional FEN components if present
+  const fenParts = fen.split(" ");
+  if (fenParts.length > 1) {
+    // Check side to move
+    if (fenParts[1] && fenParts[1] !== "w" && fenParts[1] !== "b") {
+      return false;
+    }
+
+    // Check move number if present
+    if (fenParts.length > 2 && fenParts[2] && !/^\d+$/.test(fenParts[2])) {
       return false;
     }
   }
@@ -169,6 +192,7 @@ function isValidFen(fen: string): boolean {
  */
 function expandFenEmptySquares(fen: string): string {
   return fen
+    .replace(/9/g, "111111111")
     .replace(/8/g, "11111111")
     .replace(/7/g, "1111111")
     .replace(/6/g, "111111")

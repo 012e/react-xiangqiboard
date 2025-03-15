@@ -1,12 +1,9 @@
 import React, { forwardRef, useEffect, useRef, useState, useMemo } from "react";
 import { Meta } from "@storybook/react";
 import { Chess } from "chess.js";
+import Xiangqi from "./xiangqi";
 
-import {
-  Chessboard,
-  SparePiece,
-  ChessboardDnDProvider,
-} from "../src";
+import { Chessboard, SparePiece, ChessboardDnDProvider } from "../src";
 import { CustomSquareProps, Piece, Square } from "../src/chessboard/types";
 import Engine from "./stockfish/engine";
 
@@ -49,36 +46,27 @@ const meta: Meta<typeof Chessboard> = {
 export default meta;
 
 export const Default = () => {
-  return <Chessboard id="defaultBoard" />;
+  function onPieceDrop(source: Square, target: Square, piece: Piece) {
+    console.log("Piece dropped", { source, target, piece });
+    return true;
+  }
+  return <Chessboard id="defaultBoard" onPieceDrop={onPieceDrop} />;
 };
 
 export const PlayVsRandom = () => {
-  const [game, setGame] = useState(new Chess());
+  const [game, setGame] = useState(new Xiangqi());
   const [currentTimeout, setCurrentTimeout] = useState<NodeJS.Timeout>();
 
-  function safeGameMutate(modify) {
-    setGame((g) => {
+  function safeGameMutate(modify: (game: any) => void) {
+    setGame((g: any) => {
       const update = { ...g };
       modify(update);
       return update;
     });
   }
 
-  function makeRandomMove() {
-    const possibleMoves = game.moves();
-
-    // exit if the game is over
-    if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
-      return;
-
-    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-    safeGameMutate((game) => {
-      game.move(possibleMoves[randomIndex]);
-    });
-  }
-
   function onDrop(sourceSquare, targetSquare, piece) {
-    const gameCopy = { ...game };
+    const gameCopy: Xiangqi = Object.create(game) as Xiangqi;
     const move = gameCopy.move({
       from: sourceSquare,
       to: targetSquare,
@@ -89,7 +77,7 @@ export const PlayVsRandom = () => {
     if (move === null) return false;
 
     // store timeout so it can be cleared on undo/reset so computer doesn't execute move
-    const newTimeout = setTimeout(makeRandomMove, 200);
+    const newTimeout = setTimeout(() => {}, 200);
     setCurrentTimeout(newTimeout);
     return true;
   }
@@ -98,7 +86,7 @@ export const PlayVsRandom = () => {
     <div style={boardWrapper}>
       <Chessboard
         id="PlayVsRandom"
-        position={game.fen()}
+        position={game.exportFen()}
         onPieceDrop={onDrop}
         customBoardStyle={{
           borderRadius: "4px",
@@ -304,7 +292,7 @@ export const ClickToMove = () => {
         verbose: true,
       });
       const foundMove = moves.find(
-        (m) => m.from === moveFrom && m.to === square
+        (m) => m.from === moveFrom && m.to === square,
       );
       // not a valid move
       if (!foundMove) {
@@ -402,7 +390,6 @@ export const ClickToMove = () => {
     </div>
   );
 };
-
 
 export const StyledBoard = () => {
   const [game, setGame] = useState(new Chess());
@@ -696,7 +683,7 @@ export const CustomSquare = () => {
           </div>
         </div>
       );
-    }
+    },
   );
 
   return (
@@ -728,7 +715,7 @@ export const AnalysisBoard = () => {
 
       positionEvaluation &&
         setPositionEvaluation(
-          ((game.turn() === "w" ? 1 : -1) * Number(positionEvaluation)) / 100
+          ((game.turn() === "w" ? 1 : -1) * Number(positionEvaluation)) / 100,
         );
       possibleMate && setPossibleMate(possibleMate);
       depth && setDepth(depth);
@@ -898,8 +885,9 @@ export const BoardWithCustomArrows = () => {
 ///////////////////////////////////
 export const ManualBoardEditor = () => {
   const game = useMemo(() => new Chess("8/8/8/8/8/8/8/8 w - - 0 1"), []); // empty board
-  const [boardOrientation, setBoardOrientation] =
-    useState<"white" | "black">("white");
+  const [boardOrientation, setBoardOrientation] = useState<"white" | "black">(
+    "white",
+  );
   const [boardWidth, setBoardWidth] = useState(360);
   const [fenPosition, setFenPosition] = useState(game.fen());
 
@@ -913,7 +901,7 @@ export const ManualBoardEditor = () => {
       setFenPosition(game.fen());
     } else {
       alert(
-        `The board already contains ${color === "w" ? "WHITE" : "BLACK"} KING`
+        `The board already contains ${color === "w" ? "WHITE" : "BLACK"} KING`,
       );
     }
 
@@ -1042,7 +1030,7 @@ export const ManualBoardEditor = () => {
             style={buttonStyle}
             onClick={() => {
               setBoardOrientation(
-                boardOrientation === "white" ? "black" : "white"
+                boardOrientation === "white" ? "black" : "white",
               );
             }}
           >

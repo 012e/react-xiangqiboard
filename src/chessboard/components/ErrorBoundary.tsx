@@ -8,7 +8,7 @@ export function ErrorBoundary({ children }: ErrorBoundaryProps) {
   try {
     return <>{children}</>;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return <WhiteKing showError={true} />;
   }
 }
