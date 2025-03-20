@@ -170,6 +170,8 @@ export function Square({
         <CustomSquare
           ref={squareRef}
           square={square}
+          // todo: remove field
+          squareColor="white"
           style={{
             ...size(boardWidth),
             ...center,

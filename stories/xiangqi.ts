@@ -1,6 +1,6 @@
 export default class Xiangqi {
   private board: string[][];
-  private currentPlayer: "w" | "b"; // 'r' for red, 'b' for black
+  private currentPlayer: "w" | "b"; // 'w' for red, 'b' for black
   private moveCount: number;
 
   /**
