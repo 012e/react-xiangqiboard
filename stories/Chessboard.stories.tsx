@@ -57,14 +57,6 @@ export const PlayVsRandom = () => {
   const [game, setGame] = useState(new Xiangqi());
   const [currentTimeout, setCurrentTimeout] = useState<NodeJS.Timeout>();
 
-  function safeGameMutate(modify: (game: any) => void) {
-    setGame((g: any) => {
-      const update = { ...g };
-      modify(update);
-      return update;
-    });
-  }
-
   function onDrop(sourceSquare, targetSquare, piece) {
     const gameCopy: Xiangqi = Object.create(game) as Xiangqi;
     const move = gameCopy.move({
@@ -72,9 +64,13 @@ export const PlayVsRandom = () => {
       to: targetSquare,
     });
     setGame(gameCopy);
+    console.log("Move", {
+      from: sourceSquare,
+      to: targetSquare,
+    });
 
     // illegal move
-    if (move === null) return false;
+    if (!move) return false;
 
     // store timeout so it can be cleared on undo/reset so computer doesn't execute move
     const newTimeout = setTimeout(() => {}, 200);
@@ -84,6 +80,7 @@ export const PlayVsRandom = () => {
 
   return (
     <div style={boardWrapper}>
+      <h1>{game.exportFen()}</h1>
       <Chessboard
         id="PlayVsRandom"
         position={game.exportFen()}
@@ -93,28 +90,6 @@ export const PlayVsRandom = () => {
           boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
         }}
       />
-      <button
-        style={buttonStyle}
-        onClick={() => {
-          safeGameMutate((game) => {
-            game.reset();
-          });
-          clearTimeout(currentTimeout);
-        }}
-      >
-        reset
-      </button>
-      <button
-        style={buttonStyle}
-        onClick={() => {
-          safeGameMutate((game) => {
-            game.undo();
-          });
-          clearTimeout(currentTimeout);
-        }}
-      >
-        undo
-      </button>
     </div>
   );
 };
