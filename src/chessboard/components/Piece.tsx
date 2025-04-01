@@ -105,7 +105,7 @@ export function Piece({ piece, square, squares }: PieceProps) {
             squareWidth
           }px, ${
             (boardOrientation === "black" ? -1 : 1) *
-            (Number(sourceSq[1]) - Number(targetSq[1])) *
+            (Number(sourceSq.substring(1)) - Number(targetSq.substring(1))) *
             squareWidth
           }px)`,
           transition: `transform ${animationDuration}ms`,
@@ -152,13 +152,13 @@ export function Piece({ piece, square, squares }: PieceProps) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: boardWidth / 9,
-        height: boardWidth / 9,
+        width: boardWidth / 8,
+        height: boardWidth / 8,
       }}
     >
       {typeof chessPieces[piece] === "function" ? (
         (chessPieces[piece] as CustomPieceFn)({
-          squareWidth: boardWidth / 9,
+          squareWidth: boardWidth / 8,
           isDragging,
           square,
         })

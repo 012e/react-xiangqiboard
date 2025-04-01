@@ -94,6 +94,52 @@ export const PlayVsRandom = () => {
   );
 };
 
+export const Animation = () => {
+  const [game, setGame] = useState(new Xiangqi());
+  const [toggle, setToggle] = useState(false);
+  const moves = [["a4", "a10"], ["e4", "e10"], ["i10", "a1"], ["a10", "a4"], ["e10", "e4"], ["a1", "i10"]];
+  const currentState = useRef(0);
+
+  function increaseMoves() {
+    currentState.current += 1;
+    if (currentState.current >= moves.length) {
+      currentState.current = 0;
+    }
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentMove = moves[currentState.current];
+      const gameCopy: Xiangqi = Object.create(game) as Xiangqi;
+      const move = gameCopy.move({
+        from: currentMove[0],
+        to: currentMove[1],
+      });
+
+      increaseMoves();
+      if (move) {
+        setGame(gameCopy);
+        setToggle(!toggle);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [game, toggle]);
+
+  return (
+    <div style={{ textAlign: "center" }}>
+      <Chessboard
+        id="PlayVsRandom"
+        position={game.exportFen()}
+        customBoardStyle={{
+          borderRadius: "4px",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+        }}
+      />
+    </div>
+  );
+};
+
 export const PlayVsComputer = () => {
   const levels = {
     "Easy 🤓": 2,

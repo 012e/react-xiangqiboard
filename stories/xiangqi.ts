@@ -137,12 +137,12 @@ export default class Xiangqi {
 
     // Check if the piece belongs to the current player
     const isPieceRed = piece === piece.toUpperCase();
-    if (
-      (isPieceRed && this.currentPlayer !== "w") ||
-      (!isPieceRed && this.currentPlayer !== "b")
-    ) {
-      return false; // Not the current player's piece
-    }
+    //if (
+    //  (isPieceRed && this.currentPlayer !== "w") ||
+    //  (!isPieceRed && this.currentPlayer !== "b")
+    //) {
+    //  return false; // Not the current player's piece
+    //}
 
     const targetPiece = this.board[toRow][toCol];
     if (targetPiece) {
