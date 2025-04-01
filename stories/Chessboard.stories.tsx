@@ -136,6 +136,15 @@ export const Animation = () => {
           boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
         }}
       />
+      <Chessboard
+        id="PlayVsRandom"
+        position={game.exportFen()}
+        customBoardStyle={{
+          borderRadius: "4px",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+        }}
+        boardOrientation="black"
+      />
     </div>
   );
 };
