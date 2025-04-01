@@ -25,7 +25,8 @@ export function getRelativeCoords(
   const rows = boardOrientation === "white" ? WHITE_ROWS : BLACK_ROWS;
 
   const x = columns[square[0]] * squareWidth + squareWidth / 2;
-  const y = rows[parseInt(square[1], 10) - 1] * squareWidth + squareWidth / 2;
+  const y = rows[parseInt(square.substring(1), 10) - 1] * squareWidth + squareWidth / 2;
+  console.log({ x, y });
   return { x, y };
 }
 

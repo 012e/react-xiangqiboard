@@ -7,11 +7,8 @@ import { WhiteKing } from "./ErrorBoundary";
 export function Board() {
   const boardRef = useRef<HTMLDivElement>(null);
 
-  const {
-    boardWidth,
-    clearCurrentRightClickDown,
-    customBoardStyle,
-  } = useChessboard();
+  const { boardWidth, clearCurrentRightClickDown, customBoardStyle } =
+    useChessboard();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -50,6 +47,6 @@ export function Board() {
 
 const boardStyles = (width: number) => ({
   cursor: "default",
-  height: width,
-  width,
+  height: (width / 8) * 10,
+  width: (width / 8) * 9,
 });
