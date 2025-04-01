@@ -1,6 +1,6 @@
 {
   "name": "react-xiangqiboard",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A simple Xiangqi Board for React. Inspired and adapted from the unmaintained Chessboard.jsx. A fork of react-chessboard.",
   "author": "Phạm Nhật Huy <huyphmnhat@gmail.com>",
   "repository": "https://github.com/012e/react-xiangqiboard",
