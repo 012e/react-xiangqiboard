@@ -27,7 +27,13 @@ export function Board() {
   }, []);
 
   return boardWidth ? (
-    <div style={{ perspective: "1000px" }}>
+    <div
+      style={{
+        perspective: "1000px",
+        width: "fit-content",
+        height: "fit-content",
+      }}
+    >
       <div
         ref={boardRef}
         style={{
