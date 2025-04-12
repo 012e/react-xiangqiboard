@@ -55,7 +55,7 @@ export const Default = () => {
 
 export const PlayVsRandom = () => {
   const [game, setGame] = useState(new Xiangqi());
-  const [currentTimeout, setCurrentTimeout] = useState<NodeJS.Timeout>();
+  const count = useRef(0);
 
   function onDrop(sourceSquare, targetSquare, piece) {
     const gameCopy: Xiangqi = Object.create(game) as Xiangqi;
@@ -71,25 +71,41 @@ export const PlayVsRandom = () => {
 
     // illegal move
     if (!move) return false;
-
-    // store timeout so it can be cleared on undo/reset so computer doesn't execute move
-    const newTimeout = setTimeout(() => {}, 200);
-    setCurrentTimeout(newTimeout);
     return true;
   }
 
   return (
     <div style={boardWrapper}>
       <h1>{game.exportFen()}</h1>
-      <Chessboard
-        id="PlayVsRandom"
-        position={game.exportFen()}
-        onPieceDrop={onDrop}
-        customBoardStyle={{
-          borderRadius: "4px",
-          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "1rem",
         }}
-      />
+      >
+        <Chessboard
+          id="PlayVsRandom"
+          position={game.exportFen()}
+          onPieceDrop={onDrop}
+          animationDuration={2000}
+          customBoardStyle={{
+            borderRadius: "4px",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+          }}
+        />
+        <Chessboard
+          id="PlayVsRandom"
+          position={game.exportFen()}
+          onPieceDrop={onDrop}
+          animationDuration={2000}
+          boardOrientation={"black"}
+          customBoardStyle={{
+            borderRadius: "4px",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+          }}
+        />
+      </div>
     </div>
   );
 };
@@ -97,7 +113,15 @@ export const PlayVsRandom = () => {
 export const Animation = () => {
   const [game, setGame] = useState(new Xiangqi());
   const [toggle, setToggle] = useState(false);
-  const moves = [["a4", "a10"], ["e4", "e10"], ["i10", "a1"], ["a10", "a4"], ["e10", "e4"], ["a1", "i10"]];
+  const autoMove = useRef(false);
+  const moves = [
+    ["a4", "a10"],
+    ["e4", "e10"],
+    ["i10", "a1"],
+    ["a10", "a4"],
+    ["e10", "e4"],
+    ["a1", "i10"],
+  ];
   const currentState = useRef(0);
 
   function increaseMoves() {
@@ -109,6 +133,7 @@ export const Animation = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if (!autoMove.current) return;
       const currentMove = moves[currentState.current];
       const gameCopy: Xiangqi = Object.create(game) as Xiangqi;
       const move = gameCopy.move({
@@ -128,23 +153,31 @@ export const Animation = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <Chessboard
-        id="PlayVsRandom"
-        position={game.exportFen()}
-        customBoardStyle={{
-          borderRadius: "4px",
-          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "1rem",
         }}
-      />
-      <Chessboard
-        id="PlayVsRandom"
-        position={game.exportFen()}
-        customBoardStyle={{
-          borderRadius: "4px",
-          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
-        }}
-        boardOrientation="black"
-      />
+      >
+        <Chessboard
+          id="PlayVsRandom"
+          position={game.exportFen()}
+          customBoardStyle={{
+            borderRadius: "4px",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+          }}
+        />
+        <Chessboard
+          id="PlayVsRandom"
+          position={game.exportFen()}
+          customBoardStyle={{
+            borderRadius: "4px",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+          }}
+          boardOrientation="black"
+        />
+      </div>
     </div>
   );
 };
