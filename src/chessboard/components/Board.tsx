@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import {useRef, useEffect, createContext} from "react";
 import { Squares } from "./Squares";
 import { Arrows } from "./Arrows";
 import { useChessboard } from "../context/chessboard-context";
@@ -6,7 +6,6 @@ import { WhiteKing } from "./ErrorBoundary";
 
 export function Board() {
   const boardRef = useRef<HTMLDivElement>(null);
-
   const { boardWidth, clearCurrentRightClickDown, customBoardStyle } =
     useChessboard();
 

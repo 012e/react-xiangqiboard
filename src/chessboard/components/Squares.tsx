@@ -14,13 +14,14 @@ export function Squares() {
     currentPosition,
     id,
     showBoardNotation,
+    myStyleBoard,
   } = useChessboard();
-
+  
   return (
     <div
       data-boardid={id}
       style={{
-        backgroundImage: `url("https://raw.githubusercontent.com/lengyanyu258/xiangqiboardjs/refs/heads/master/docs/img/xiangqiboards/wikimedia/xiangqiboard.svg")`,
+        backgroundImage: `url(${typeof myStyleBoard === 'object' ? (myStyleBoard as React.ReactElement).props.src : myStyleBoard})`,
         backgroundSize: "contain", // Ensures full stretch
         flexWrap: "nowrap",
         width: (boardWidth / 8) * 9,

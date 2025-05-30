@@ -349,6 +349,11 @@ export type ChessboardProps = {
    * @default true
    */
   snapToCursor?: boolean;
+  /**
+   * URL for custom board background image.
+   * @default "https://down-vn.img.susercontent.com/file/3ef4261cdf4308584d3afd57f708556d"
+   */
+  myStyleBoard?: string;
 };
 
 export type ChessboardDnDProviderProps = {
