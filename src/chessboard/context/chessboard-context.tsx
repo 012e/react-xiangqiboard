@@ -52,7 +52,7 @@ interface ChessboardProviderContext {
   dropOffBoardAction: ChessboardProps["dropOffBoardAction"];
   id: RequiredChessboardProps["id"];
   isDraggablePiece: RequiredChessboardProps["isDraggablePiece"];
-  myStyleBoard: ReactNode;
+  chessboardAppearance: ReactNode;
   onDragOverSquare: RequiredChessboardProps["onDragOverSquare"];
   onMouseOutSquare: RequiredChessboardProps["onMouseOutSquare"];
   onMouseOverSquare: RequiredChessboardProps["onMouseOverSquare"];
@@ -366,7 +366,7 @@ export const ChessboardProvider = forwardRef(
       isWaitingForAnimation,
       lastPieceColour,
       lastSquareDraggedOver,
-      myStyleBoard: <img src={myStyleBoard} alt="Chess board style" />,
+      chessboardAppearance: <img src={myStyleBoard} alt="Chess board style" />,
       newArrow,
       onArrowDrawEnd,
       onDragOverSquare,
