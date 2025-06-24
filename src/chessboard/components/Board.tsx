@@ -6,7 +6,6 @@ import { WhiteKing } from "./ErrorBoundary";
 
 export function Board() {
   const boardRef = useRef<HTMLDivElement>(null);
-
   const { boardWidth, clearCurrentRightClickDown, customBoardStyle } =
     useChessboard();
 

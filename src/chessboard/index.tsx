@@ -24,6 +24,7 @@ export const Chessboard = forwardRef<unknown, ChessboardProps>(
       customDndBackend,
       customDndBackendOptions,
       onBoardWidthChange,
+      customBoardBackground = "https://raw.githubusercontent.com/lengyanyu258/xiangqiboardjs/refs/heads/master/docs/img/xiangqiboards/wikimedia/xiangqiboard.svg",
       ...otherProps
     } = props;
     const [boardWidth, setBoardWidth] = useState(props.boardWidth);
@@ -83,6 +84,7 @@ export const Chessboard = forwardRef<unknown, ChessboardProps>(
             {boardWidth && (
               <ChessboardProvider
                 boardWidth={boardWidth}
+                customBoardBackground={customBoardBackground}
                 {...otherProps}
                 ref={ref}
               >

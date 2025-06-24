@@ -5,6 +5,7 @@ import { Coords, Piece as Pc, Square as Sq } from "../types";
 import { Notation } from "./Notation";
 import { Piece } from "./Piece";
 import { Square } from "./Square";
+
 export function Squares() {
   const [squares, setSquares] = useState<{ [square in Sq]?: Coords }>({});
 
@@ -14,13 +15,14 @@ export function Squares() {
     currentPosition,
     id,
     showBoardNotation,
+    boardBackground,
   } = useChessboard();
 
   return (
     <div
       data-boardid={id}
       style={{
-        backgroundImage: `url("https://raw.githubusercontent.com/lengyanyu258/xiangqiboardjs/refs/heads/master/docs/img/xiangqiboards/wikimedia/xiangqiboard.svg")`,
+        backgroundImage: `url(${boardBackground})`,
         backgroundSize: "contain", // Ensures full stretch
         flexWrap: "nowrap",
         width: (boardWidth / 8) * 9,

@@ -29,6 +29,7 @@ import { useArrows } from "../hooks/useArrows";
 interface ChessboardProviderProps extends ChessboardProps {
   boardWidth: number;
   children: ReactNode;
+  customBoardBackground?: string;
 }
 
 type RequiredChessboardProps = Required<ChessboardProps>;
@@ -51,6 +52,7 @@ interface ChessboardProviderContext {
   dropOffBoardAction: ChessboardProps["dropOffBoardAction"];
   id: RequiredChessboardProps["id"];
   isDraggablePiece: RequiredChessboardProps["isDraggablePiece"];
+  boardBackground: ReactNode;
   onDragOverSquare: RequiredChessboardProps["onDragOverSquare"];
   onMouseOutSquare: RequiredChessboardProps["onMouseOutSquare"];
   onMouseOverSquare: RequiredChessboardProps["onMouseOverSquare"];
@@ -77,7 +79,7 @@ interface ChessboardProviderContext {
     sourceSq: Square,
     targetSq: Square,
     piece: Piece,
-    wasManualDropOverride?: boolean
+    wasManualDropOverride?: boolean,
   ) => void;
   handleSparePieceDrop: (piece: Piece, targetSq: Square) => void;
   isWaitingForAnimation: boolean;
@@ -120,6 +122,7 @@ export const ChessboardProvider = forwardRef(
       dropOffBoardAction = "snapback",
       id = 0,
       isDraggablePiece = () => true,
+      customBoardBackground,
       getPositionObject = () => {},
       onArrowsChange = () => {},
       onDragOverSquare = () => {},
@@ -137,11 +140,11 @@ export const ChessboardProvider = forwardRef(
       showBoardNotation = true,
       snapToCursor = true,
     }: ChessboardProviderProps,
-    ref
+    ref,
   ) => {
     // position stored and displayed on board
     const [currentPosition, setCurrentPosition] = useState(
-      convertPositionToObject(position)
+      convertPositionToObject(position),
     );
 
     // calculated differences between current and incoming positions
@@ -151,12 +154,14 @@ export const ChessboardProvider = forwardRef(
     }>({ removed: {}, added: {} });
 
     // colour of last piece moved to determine if premoving
-    const [lastPieceColour, setLastPieceColour] =
-      useState<string | undefined>(undefined);
+    const [lastPieceColour, setLastPieceColour] = useState<string | undefined>(
+      undefined,
+    );
 
     // current right mouse down square
-    const [currentRightClickDown, setCurrentRightClickDown] =
-      useState<Square | undefined>();
+    const [currentRightClickDown, setCurrentRightClickDown] = useState<
+      Square | undefined
+    >();
 
     // chess pieces/styling
     const [chessPieces, setChessPieces] = useState({
@@ -250,7 +255,7 @@ export const ChessboardProvider = forwardRef(
         customArrows,
         areArrowsAllowed,
         onArrowsChange,
-        customArrowColor
+        customArrowColor,
       );
 
     // handle drop position change
@@ -258,7 +263,7 @@ export const ChessboardProvider = forwardRef(
       sourceSq: Square,
       targetSq: Square,
       piece: Piece,
-      wasManualDropOverride?: boolean
+      wasManualDropOverride?: boolean,
     ) {
       // if dropped back down, don't do anything
       if (sourceSq === targetSq) {
@@ -363,6 +368,7 @@ export const ChessboardProvider = forwardRef(
       isWaitingForAnimation,
       lastPieceColour,
       lastSquareDraggedOver,
+      boardBackground: customBoardBackground,
       newArrow,
       onArrowDrawEnd,
       onDragOverSquare,
@@ -388,5 +394,5 @@ export const ChessboardProvider = forwardRef(
         {children}
       </ChessboardContext.Provider>
     );
-  }
+  },
 );
