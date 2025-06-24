@@ -1,4 +1,4 @@
-import {useRef, useEffect, createContext} from "react";
+import {useRef, useEffect } from "react";
 import { Squares } from "./Squares";
 import { Arrows } from "./Arrows";
 import { useChessboard } from "../context/chessboard-context";

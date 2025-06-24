@@ -29,7 +29,7 @@ import { useArrows } from "../hooks/useArrows";
 interface ChessboardProviderProps extends ChessboardProps {
   boardWidth: number;
   children: ReactNode;
-  myStyleBoard?: string;
+  customBoardBackground?: string;
 }
 
 type RequiredChessboardProps = Required<ChessboardProps>;
@@ -52,7 +52,7 @@ interface ChessboardProviderContext {
   dropOffBoardAction: ChessboardProps["dropOffBoardAction"];
   id: RequiredChessboardProps["id"];
   isDraggablePiece: RequiredChessboardProps["isDraggablePiece"];
-  chessboardAppearance: ReactNode;
+  boardBackground: ReactNode;
   onDragOverSquare: RequiredChessboardProps["onDragOverSquare"];
   onMouseOutSquare: RequiredChessboardProps["onMouseOutSquare"];
   onMouseOverSquare: RequiredChessboardProps["onMouseOverSquare"];
@@ -122,7 +122,7 @@ export const ChessboardProvider = forwardRef(
       dropOffBoardAction = "snapback",
       id = 0,
       isDraggablePiece = () => true,
-      myStyleBoard = "https://down-vn.img.susercontent.com/file/3ef4261cdf4308584d3afd57f708556d",
+      customBoardBackground,
       getPositionObject = () => {},
       onArrowsChange = () => {},
       onDragOverSquare = () => {},
@@ -366,7 +366,7 @@ export const ChessboardProvider = forwardRef(
       isWaitingForAnimation,
       lastPieceColour,
       lastSquareDraggedOver,
-      chessboardAppearance: <img src={myStyleBoard} alt="Chess board style" />,
+      boardBackground: <img src={customBoardBackground} alt="Chess board style" />,
       newArrow,
       onArrowDrawEnd,
       onDragOverSquare,
