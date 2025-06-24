@@ -79,7 +79,7 @@ interface ChessboardProviderContext {
     sourceSq: Square,
     targetSq: Square,
     piece: Piece,
-    wasManualDropOverride?: boolean
+    wasManualDropOverride?: boolean,
   ) => void;
   handleSparePieceDrop: (piece: Piece, targetSq: Square) => void;
   isWaitingForAnimation: boolean;
@@ -140,11 +140,11 @@ export const ChessboardProvider = forwardRef(
       showBoardNotation = true,
       snapToCursor = true,
     }: ChessboardProviderProps,
-    ref
+    ref,
   ) => {
     // position stored and displayed on board
     const [currentPosition, setCurrentPosition] = useState(
-      convertPositionToObject(position)
+      convertPositionToObject(position),
     );
 
     // calculated differences between current and incoming positions
@@ -154,12 +154,14 @@ export const ChessboardProvider = forwardRef(
     }>({ removed: {}, added: {} });
 
     // colour of last piece moved to determine if premoving
-    const [lastPieceColour, setLastPieceColour] =
-      useState<string | undefined>(undefined);
+    const [lastPieceColour, setLastPieceColour] = useState<string | undefined>(
+      undefined,
+    );
 
     // current right mouse down square
-    const [currentRightClickDown, setCurrentRightClickDown] =
-      useState<Square | undefined>();
+    const [currentRightClickDown, setCurrentRightClickDown] = useState<
+      Square | undefined
+    >();
 
     // chess pieces/styling
     const [chessPieces, setChessPieces] = useState({
@@ -253,7 +255,7 @@ export const ChessboardProvider = forwardRef(
         customArrows,
         areArrowsAllowed,
         onArrowsChange,
-        customArrowColor
+        customArrowColor,
       );
 
     // handle drop position change
@@ -261,7 +263,7 @@ export const ChessboardProvider = forwardRef(
       sourceSq: Square,
       targetSq: Square,
       piece: Piece,
-      wasManualDropOverride?: boolean
+      wasManualDropOverride?: boolean,
     ) {
       // if dropped back down, don't do anything
       if (sourceSq === targetSq) {
@@ -366,7 +368,7 @@ export const ChessboardProvider = forwardRef(
       isWaitingForAnimation,
       lastPieceColour,
       lastSquareDraggedOver,
-      boardBackground: <img src={customBoardBackground} alt="Chess board style" />,
+      boardBackground: customBoardBackground,
       newArrow,
       onArrowDrawEnd,
       onDragOverSquare,
@@ -392,5 +394,5 @@ export const ChessboardProvider = forwardRef(
         {children}
       </ChessboardContext.Provider>
     );
-  }
+  },
 );
