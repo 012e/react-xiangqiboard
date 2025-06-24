@@ -84,7 +84,7 @@ export const Chessboard = forwardRef<unknown, ChessboardProps>(
             {boardWidth && (
               <ChessboardProvider
                 boardWidth={boardWidth}
-                customBoardBackground={myStyleBoard}
+                customBoardBackground={customBoardBackground}
                 {...otherProps}
                 ref={ref}
               >
