@@ -35,7 +35,7 @@ export function Squares() {
             style={{
               display: "flex",
               flexWrap: "nowrap",
-              width: (boardWidth / 8) * 9,
+              width: "fit-content"
             }}
           >
             {[...Array(9)].map((_, c) => {
